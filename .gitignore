@@ -1,0 +1,22 @@
+# Arquivos Python
+__pycache__/
+*.py[cod]
+*.env
+*.venv
+
+# Ambiente virtual
+venv/
+env/
+
+# Arquivos sensíveis
+.env
+.env.local
+secrets.py
+
+# Logs e databases
+*.log
+*.sqlite
+
+# Diretórios de IDE
+.idea/
+.vscode/
