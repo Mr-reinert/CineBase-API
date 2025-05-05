@@ -1,7 +1,7 @@
 from routers import filmes
 from fastapi import FastAPI, Depends, HTTPException,status
 from sqlalchemy.orm import Session
-import models, schemas
+import models.models as models, models.schemas as schemas
 from database import engine, get_db
 from passlib.context import CryptContext
 from datetime import timedelta,datetime
@@ -21,10 +21,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 @app.get("/")
 def root():
     return {"mensagem": "CineBase API está online!", "status": "OK"}
-
-
-
-
 
 #-------------------------------------------------------------------------------------------------------------------------------
 
