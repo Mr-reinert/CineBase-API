@@ -69,3 +69,7 @@ def listar_em_cartaz_formatado(regiao: str = "BR"):
             for f in dados["results"]
         ]
     }
+
+
+
+
