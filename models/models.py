@@ -1,7 +1,9 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, func, DECIMAL, Text, Date
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
 from database import Base  # Importe Base do database.py
+from sqlalchemy.sql import func
+from sqlalchemy.sql.sqltypes import TIMESTAMP
+
 
 class User(Base):
     __tablename__ = "users"
@@ -13,7 +15,7 @@ class User(Base):
     created_at = Column(DateTime, default=func.now())
 
     reviews = relationship("Review", back_populates="user")
-    watchlist = relationship("Watchlist", back_populates="user")
+    watchlist_entries = relationship("Watchlist", back_populates="user")  # Alterado para watchlist_entries
     favorite_genres = relationship("Genre", secondary="user_favorite_genres", back_populates="users")
     favorite_people = relationship("Person", secondary="user_favorite_people", back_populates="users")
 
@@ -24,7 +26,7 @@ class Genre(Base):
     name = Column(String(50), unique=True, nullable=False)
 
     movies = relationship("Movie", secondary="movie_genres", back_populates="genres")
-    users = relationship("User", secondary="user_favorite_genres", back_populates="favorite_genres")
+    users = relationship("User", secondary="user_favorite_genres", back_populates="favorite_genres")  # Alterado
 
 class Movie(Base):
     __tablename__ = "movies"
@@ -51,7 +53,7 @@ class Person(Base):
 
     movies = relationship("Movie", secondary="movie_cast", back_populates="cast")
     performance_reviews = relationship("PerformanceReview", back_populates="person")
-    users = relationship("User", secondary="user_favorite_people", back_populates="favorite_people")
+    users = relationship("User", secondary="user_favorite_people", back_populates="favorite_people") #Alterado
 
 class Review(Base):
     __tablename__ = "reviews"
@@ -77,7 +79,7 @@ class Watchlist(Base):
     added_at = Column(DateTime, default=func.now())
     watched_at = Column(DateTime)
 
-    user = relationship("User", back_populates="watchlist")
+    user = relationship("User", back_populates="watchlist_entries")  # Alterado para watchlist_entries
     movie = relationship("Movie", back_populates="watchlist_entries")
 
 class MovieGenre(Base):

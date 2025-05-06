@@ -1,9 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from core.config import settings  # Importa as configurações do core/config.py
 
-# Substitua com as suas informações de conexão com o PostgreSQL
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:postgres@localhost:5687/cinebase"
+# Obtém a URL do banco de dados das configurações
+SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 

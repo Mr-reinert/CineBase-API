@@ -1,54 +1,51 @@
-import os
 import requests
-from dotenv import load_dotenv
+from core.config import settings # Importa as configurações do projeto
 
-load_dotenv()
 
-TMDB_URL = "https://api.themoviedb.org/3"
-USE_BEARER = os.getenv("USE_BEARER", "false").lower() == "true"
-API_KEY_V3 = os.getenv("TMDB_API_KEY_V3")
-BEARER_TOKEN = os.getenv("TMDB_BEARER_TOKEN")
-
-# Função utilitária para fazer as requisições, centralizando a lógica de autenticação
 def fazer_requisicao(endpoint: str, params: dict = None):
+
     if params is None:
         params = {}
 
     headers = {"accept": "application/json"}
-    
-    # Usando Bearer Token se configurado no .env, senão a chave de API V3
-    if USE_BEARER:
-        headers["Authorization"] = f"Bearer {BEARER_TOKEN}"
+
+    # Usando Bearer Token se configurado, senão a chave de API V3
+    if settings.USE_BEARER:
+        headers["Authorization"] = f"Bearer {settings.BEARER_TOKEN}"
     else:
-        params["api_key"] = API_KEY_V3
+        params["api_key"] = settings.TMDB_API_KEY_V3
 
     try:
         resposta = requests.get(endpoint, params=params, headers=headers)
-        resposta.raise_for_status()
+        resposta.raise_for_status()  # Lança uma exceção para status de erro (4xx ou 5xx)
         return resposta.json()
     except requests.exceptions.RequestException as e:
         print(f"Erro na requisição para {endpoint}: {e}")
-        return None
+        return None  # Retorna None em caso de erro, para ser tratado por quem chama
 
 # Função para buscar um filme específico por ID
-def buscar_filme_por_id(id_filme: int):
-    endpoint = f"{TMDB_URL}/movie/{id_filme}"
+def buscar_filme_por_id(id_filme: int) -> dict:
+    endpoint = f"{settings.TMDB_URL}/movie/{id_filme}"
     params = {
         "language": "pt-BR",
         "append_to_response": "credits,watch/providers"
     }
     return fazer_requisicao(endpoint, params)
 
+
+
+# Função para buscar filmes em cartaz
 def buscar_em_cartaz(pagina: int = 1, regiao: str = "BR") -> dict:
 
-    endpoint = f"{TMDB_URL}/movie/now_playing"
+    endpoint = f"{settings.TMDB_URL}/movie/now_playing"
     params = {
-        "api_key": API_KEY_V3,  # Assume que USE_BEARER = False
         "region": regiao,
         "page": pagina,
-        "language": "pt-BR"
+        "language": "pt-BR",
     }
-    
     resposta = fazer_requisicao(endpoint, params)
     return resposta if resposta else {}
+
+
+
 

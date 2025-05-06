@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
 
+
 class ReviewBase(BaseModel):
     rating: int
     comment: Optional[str] = None
@@ -42,3 +43,18 @@ class User(UserBase):
 class UserLogin(BaseModel):
     email: str
     password: str
+
+class WatchlistBase(BaseModel):
+    movie_id: int
+    watched: bool = False
+
+class WatchlistCreate(WatchlistBase):
+    pass
+
+class Watchlist(WatchlistBase):
+    user_id: int
+    added_at: datetime
+    watched_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
