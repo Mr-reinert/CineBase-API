@@ -128,7 +128,7 @@ Authorization: Bearer <seu_token>
 Para testar os filmes em cartaz diretamente da TMDB, use:
 
 ```
-https://api.themoviedb.org/3/movie/now_playing?api_key=<sua_chave_v3>
+https://seuservidor:8000/em_cartaz
 ```
 
 ---
