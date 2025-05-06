@@ -57,7 +57,7 @@ A **Cinebase API** é uma API RESTful desenvolvida com **FastAPI** para gerencia
    ```env
    # TMDB
    USE_BEARER=true
-   TMDB_API_KEY=<sua_chave_jwt>
+   TMDB_API_KEY=<sua_chave sabendo que tem duas... a maior">
    TMDB_API_KEY_V3=<sua_chave_v3>
    TMDB_URL=https://api.themoviedb.org/3
 
