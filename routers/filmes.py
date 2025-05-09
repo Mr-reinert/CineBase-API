@@ -1,14 +1,46 @@
-from fastapi import APIRouter, HTTPException, status, Depends # Importa Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Query # Importa Depends
 from sqlalchemy.orm import Session
 from database import get_db
+from crud import movie as movie_crud
 from models import models, schemas  # Importa os modelos e schemas do diretório models
 from core.auth import get_current_user # Importa get_current_user de core.auth
-from services.tmdb_service import buscar_filme_por_id, buscar_em_cartaz # Importa do service
-from utils.format import formatar_duracao, formatar_dinheiro # Importa do utils
+from services.tmdb_service import buscar_filme_por_id, buscar_em_cartaz, buscar_filme_por_nome # Importa do service
+from utils.format import formatar_duracao, formatar_dinheiro, formatar_dados_tmdb # Importa do utils
 from typing import List
 from datetime import datetime
 
 router = APIRouter(tags=["filmes"])
+
+@router.get("/filmes/{query}", response_model=schemas.Movie)
+def buscar_filme(query: str, db: Session = Depends(get_db)):
+    # Buscar filme no banco de dados
+    filmes = movie_crud.get_movie_by_title(db, query)
+
+    # Se o filme for encontrado no banco de dados, é importante garantir que é um único filme
+    if filmes:
+        if isinstance(filmes, list):  # Verifica se é uma lista
+            filme = filmes[0]  # Pega o primeiro filme da lista
+        else:
+            filme = filmes  # Já é um único filme
+        return schemas.Movie.from_orm(filme)  # Converte para o modelo Pydantic
+
+    # Se o filme não for encontrado, buscar na API externa (TMDB)
+    dados_tmdb = buscar_filme_por_nome(query)
+
+    if not dados_tmdb:
+        raise HTTPException(status_code=404, detail="Filme não encontrado")
+
+    # Formatar os dados da API
+    filme_formatado = formatar_dados_tmdb(dados_tmdb)
+    
+    # Criar um novo filme com base nos dados da API
+    novo_filme = schemas.MovieCreate(**filme_formatado)
+
+    # Salvar o novo filme no banco de dados
+    filme_salvo = movie_crud.create_movie(db, novo_filme)
+    
+    # Retornar o filme recém-criado, convertendo-o para o modelo Pydantic
+    return schemas.Movie.from_orm(filme_salvo)
 
 # esse aqui sobe a rota "/filmes/" aí colocando o id do lado já da pra pegar os dados desse filme
 @router.get("/filmes/{filme_id}", tags=["Filmes"])
@@ -113,3 +145,18 @@ async def get_movie_reviews(
 
     reviews = db.query(models.Review).filter(models.Review.movie_id == db_movie.id).all()
     return reviews
+
+@router.get("/filmes/{movie_id_tmdb}/avaliacoes", response_model=List[schemas.Review])
+async def get_movie_reviews(
+    movie_id_tmdb: int,
+    db: Session = Depends(get_db)
+):
+    db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id_tmdb).first()
+    if not db_movie:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Filme com ID {movie_id_tmdb} não encontrado")
+
+    reviews = db.query(models.Review).filter(models.Review.movie_id == db_movie.id).all()
+    return reviews
+
+
+

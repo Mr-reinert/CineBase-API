@@ -13,3 +13,12 @@ def formatar_dinheiro(valor: int) -> str:
     elif valor >= 1_000_000:
         return f"${valor/1_000_000:.1f}M"
     return f"${valor:,}"
+
+def formatar_dados_tmdb(dados):
+    return {
+        "id": dados.get("id"),
+        "title": dados.get("title"),
+        "overview": dados.get("overview"),
+        "poster_url": dados.get("poster_path"),
+        "release_date": dados.get("release_date")
+    }

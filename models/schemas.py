@@ -1,6 +1,28 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+from datetime import date
+
+# Filmes
+class MovieBase(BaseModel):
+    title: str
+    overview: Optional[str] = ""
+    poster_url: Optional[str] = ""
+    release_date: Optional[str] = ""
+    id: int
+
+class MovieCreate(BaseModel):
+    id: int
+    title: Optional[str] = None
+    overview: Optional[str] = None
+    poster_url: Optional[str] = None
+    release_date: Optional[date] = None
+
+class Movie(MovieCreate):
+    id: int  # ID local do banco
+
+    class Config:
+        from_attributes = True  # Para Pydantic v2 usar com SQLAlchemy
 
 
 class ReviewBase(BaseModel):

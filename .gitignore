@@ -7,6 +7,7 @@ __pycache__/
 # Ambiente virtual
 venv/
 env/
+cinebase
 
 # Arquivos sensíveis
 .env

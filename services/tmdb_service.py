@@ -1,7 +1,9 @@
 import requests
-from core.config import settings # Importa as configurações do projeto
+from fastapi import HTTPException
+from core.config import settings
 
 
+# Retorna o objeto Json que foi solicitado           
 def fazer_requisicao(endpoint: str, params: dict = None):
 
     if params is None:
@@ -48,4 +50,22 @@ def buscar_em_cartaz(pagina: int = 1, regiao: str = "BR") -> dict:
 
 
 
+def buscar_filme_por_nome(query: str):
+    url = f"{settings.TMDB_URL}/search/movie?query={query}&language=pt-BR&page=1"
 
+    headers = {
+        "accept": "application/json",
+        "Authorization": f"Bearer {settings.BEARER_TOKEN}"
+    }
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=500, detail="Erro ao buscar dados no TMDB")
+
+    dados = response.json()
+
+    if not dados.get("results"):
+        return None
+
+    return dados["results"][0]  # pega o primeiro resultado da lista
