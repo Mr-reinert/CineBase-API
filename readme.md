@@ -149,10 +149,6 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload &
 
 ---
 
-## 🤝 Contribuições
-
-Contribuições são bem-vindas! Sinta-se à vontade para:
-
-* Criar **issues**
-* Sugerir **melhorias**
-* Enviar **pull requests**
+## 🤝 Feito por:
+Tarcisio Reinert Neto
+Rafael de Toledo Alves
