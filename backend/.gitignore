@@ -1,0 +1,17 @@
+# Arquivos Python
+__pycache__/
+*.py[cod]
+
+# Ambiente virtual
+venv/
+env/
+cinebase
+
+
+# Logs e databases
+*.log
+*.sqlite
+
+# Diretórios de IDE
+.idea/
+.vscode/
