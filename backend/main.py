@@ -14,3 +14,18 @@ app.include_router(users.router)   # Inclui o router de usuários
 @app.get("/")
 def root():
     return {"mensagem": "CineBase API está online!", "status": "OK"}
+
+from fastapi.middleware.cors import CORSMiddleware
+
+origins = [
+    "*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
